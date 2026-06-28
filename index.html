@@ -671,11 +671,11 @@
         .mini-btn {
             background: none;
             border: none;
-            font-size: 1.3rem;
+            font-size: 1.4rem; /* Disesuaikan agar pas dengan SVG Refresh */
             color: #111;
             cursor: pointer;
             padding: 5px;
-            display: flex; /* Centering SVG */
+            display: flex; 
             align-items: center;
             justify-content: center;
         }
@@ -780,7 +780,7 @@
             border: none;
             color: white;
             cursor: pointer;
-            display: flex; /* Centering SVG */
+            display: flex; 
             align-items: center;
             justify-content: center;
         }
@@ -1129,12 +1129,11 @@
                             <p>HIVI!</p>
                         </div>
                         <div class="mini-controls">
-                            <!-- Tombol SVG (Aman dari Emoji Android/iOS) -->
                             <button class="mini-btn" id="mini-play-btn" onclick="toggleMusic(event)">
                                 <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                             </button>
-                            <button class="mini-btn" onclick="event.stopPropagation()">
-                                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                            <button class="mini-btn" onclick="restartMusic(event)">
+                                <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
                             </button>
                         </div>
                     </div>
@@ -1191,15 +1190,16 @@
             </div>
         </div>
         <div class="full-controls">
-            <!-- Tombol SVG (Aman dari Emoji Android/iOS) -->
-            <button class="side-btn">
+            <button class="side-btn" style="visibility: hidden; pointer-events: none;">
                 <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
             </button>
+            
             <button class="play-btn-large" id="full-play-btn" onclick="toggleMusic(event)">
                 <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
-            <button class="side-btn">
-                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+
+            <button class="side-btn" onclick="restartMusic(event)">
+                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
             </button>
         </div>
     </div>
@@ -1207,24 +1207,29 @@
     <script>
         let isAudioUnlocked = false;
 
-        // --- TRIK BARU AUDIO ---
-        // Menggunakan volume = 0 agar Android memperbolehkan audio tanpa memblokir Autoplay
+        // --- SISTEM BUKA KUNCI AUDIO KHUSUS ANDROID & IOS ---
         function unlockAudio() {
             if (!isAudioUnlocked) {
-                hbdMusic.volume = 0; 
-                dashMusic.volume = 0;
+                hbdMusic.muted = true;
+                dashMusic.muted = true;
 
-                hbdMusic.play().then(() => {
-                    hbdMusic.pause();
-                    hbdMusic.currentTime = 0;
-                    hbdMusic.volume = 1;
-                }).catch(e => { });
+                let p1 = hbdMusic.play();
+                if (p1 !== undefined) {
+                    p1.then(() => {
+                        hbdMusic.pause();
+                        hbdMusic.currentTime = 0;
+                        hbdMusic.muted = false;
+                    }).catch(() => {});
+                }
 
-                dashMusic.play().then(() => {
-                    dashMusic.pause();
-                    dashMusic.currentTime = 0;
-                    dashMusic.volume = 1;
-                }).catch(e => { });
+                let p2 = dashMusic.play();
+                if (p2 !== undefined) {
+                    p2.then(() => {
+                        dashMusic.pause();
+                        dashMusic.currentTime = 0;
+                        dashMusic.muted = false;
+                    }).catch(() => {});
+                }
 
                 isAudioUnlocked = true;
                 document.removeEventListener('click', unlockAudio);
@@ -1333,6 +1338,10 @@
 
         function startHold() {
             if (isLocked) return;
+            
+            // Jaminan HBD music bisa dimainkan di Android
+            hbdMusic.play().then(() => hbdMusic.pause()).catch(e=>{});
+
             holdInterval = setInterval(() => {
                 loveValue += 1;
                 if (loveValue >= 100) { loveValue = 100; clearInterval(holdInterval); forceProceed(); }
@@ -1409,7 +1418,7 @@
             document.getElementById('bg-text').classList.add('blurred');
         }
 
-        // --- IKON SVG SEBAGAI VARIABEL ---
+        // --- IKON SVG MUSIC PLAYER ---
         const iconPlay = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
         const iconPause = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
 
@@ -1423,7 +1432,6 @@
             dashMusic.play().catch(e => console.log(e));
             isPlaying = true;
             
-            // Masukkan ikon Pause menggunakan SVG
             document.getElementById('mini-play-btn').innerHTML = iconPause;
             document.getElementById('full-play-btn').innerHTML = iconPause;
 
@@ -1447,16 +1455,26 @@
             if (event) event.stopPropagation();
             if (isPlaying) {
                 dashMusic.pause();
-                // Ubah menjadi ikon SVG Play
                 miniPlayBtn.innerHTML = iconPlay;
                 fullPlayBtn.innerHTML = iconPlay;
             } else {
                 dashMusic.play().catch(e => console.log(e));
-                // Ubah menjadi ikon SVG Pause
                 miniPlayBtn.innerHTML = iconPause;
                 fullPlayBtn.innerHTML = iconPause;
             }
             isPlaying = !isPlaying;
+        }
+
+        // --- FUNGSI REFRESH LAGU ---
+        function restartMusic(event) {
+            if (event) event.stopPropagation();
+            dashMusic.currentTime = 0;
+            if (!isPlaying) {
+                dashMusic.play().catch(e => console.log(e));
+                isPlaying = true;
+                miniPlayBtn.innerHTML = iconPause;
+                fullPlayBtn.innerHTML = iconPause;
+            }
         }
 
         function openFullPlayer(event) {
@@ -1487,6 +1505,12 @@
             let totalSecs = Math.floor(dashMusic.duration % 60);
             if (totalSecs < 10) totalSecs = "0" + totalSecs;
             totalTimeEl.innerText = totalMins + ":" + totalSecs;
+        });
+
+        dashMusic.addEventListener('ended', () => {
+            isPlaying = false;
+            miniPlayBtn.innerHTML = iconPlay;
+            fullPlayBtn.innerHTML = iconPlay;
         });
 
         function switchScreen(hideId, showId) {
