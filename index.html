@@ -1094,7 +1094,7 @@
                 </div>
                 <p
                     style="position: absolute; bottom: 40px; width: 100%; text-align: center; font-size: 0.9rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); letter-spacing: 1px;">
-                    Klik surat di atas untuk membukanyaa
+                    Klik surat di atas untuk membukanya
                 </p>
             </div>
         </div>
@@ -1428,12 +1428,6 @@
 
             hbdMusic.pause();
             hbdMusic.currentTime = 0;
-
-            dashMusic.play().catch(e => console.log(e));
-            isPlaying = true;
-            
-            document.getElementById('mini-play-btn').innerHTML = iconPause;
-            document.getElementById('full-play-btn').innerHTML = iconPause;
 
             updateDashboardData();
 
