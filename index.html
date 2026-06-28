@@ -1264,14 +1264,6 @@
 
         document.addEventListener('click', unlockAudio);
         document.addEventListener('touchstart', unlockAudio);
-            }
-
-        document.addEventListener('click', unlockAudio);
-        document.addEventListener('touchstart', unlockAudio);
-        }
-
-        document.addEventListener('click', unlockAudio);
-        document.addEventListener('touchstart', unlockAudio);
 
         let currentPin = "";
         const correctPin = "280606";
@@ -1450,6 +1442,7 @@
         function goToDashboard() {
             clearInterval(confettiInterval);
             if (typeof confetti !== 'undefined') { confetti.reset(); }
+            
             hbdMusic.pause();
             hbdMusic.currentTime = 0;
 
