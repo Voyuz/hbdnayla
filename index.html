@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <meta name="theme-color" content="#ffb6c1" id="theme-color-meta">
     <title>Happy 20th Birthday Nayla! </title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&display=swap');
@@ -1063,7 +1065,7 @@
 
 </head>
 
-<body>
+<body ontouchstart="">
 
     <audio id="hbd-music" src="happy_birthday.mp3" loop></audio>
     <audio id="dashboard-music" src="satu_satunya_hivi.mp3" loop></audio>
@@ -1284,31 +1286,31 @@
             'kado': {
                 title: 'Kado Spesial',
                 body: `
-                    <div class="kado-container">
-                        <img src="kado.jpeg" class="kado-img" alt="Foto Kado">
-                        <p>Kado kamu sedang dalam perjalanan!</p>
-                        <div class="tracking-box">
-                            <p style="font-size: 0.8rem; font-weight: bold;">Status Perjalanan:</p>
-                            <div class="tracking-bar">
-                                <div class="track-step active">Diproses</div>
-                                <div class="track-step active">Dikirim</div>
-                                <div class="track-step">Diterima</div>
+                        <div class="kado-container">
+                            <img src="kado.jpeg" class="kado-img" alt="Foto Kado">
+                            <p>Kado kamu sedang dalam perjalanan!</p>
+                            <div class="tracking-box">
+                                <p style="font-size: 0.8rem; font-weight: bold;">Status Perjalanan:</p>
+                                <div class="tracking-bar">
+                                    <div class="track-step active">Diproses</div>
+                                    <div class="track-step active">Dikirim</div>
+                                    <div class="track-step">Diterima</div>
+                                </div>
+                                <p style="font-size: 0.8rem; color: #555;">🚚 Alvaro sedang menuju lokasi Nayla!</p>
                             </div>
-                            <p style="font-size: 0.8rem; color: #555;">🚚 Alvaro sedang menuju lokasi Nayla!</p>
                         </div>
-                    </div>
-                `
+                    `
             },
             'photodump': {
                 title: 'Photo Dump',
                 body: `
-                    <div class="photo-gallery">
-                        <div class="photo-frame"><img src="foto1.jpg" alt="Foto"><div class="photo-caption">Lagi Senyum 😊</div></div>
-                        <div class="photo-frame"><img src="foto2.jpg" alt="Foto"><div class="photo-caption">Lagi Mam 🍝</div></div>
-                        <div class="photo-frame"><img src="foto3.jpg" alt="Foto"><div class="photo-caption">Lagi Nonton Konser 🎶</div></div>
-                        <div class="photo-frame"><img src="foto4.jpg" alt="Foto"><div class="photo-caption">Lagi Ngematcha 🍵</div></div>
-                    </div>
-                `
+                        <div class="photo-gallery">
+                            <div class="photo-frame"><img src="foto1.jpg" alt="Foto"><div class="photo-caption">Lagi Senyum 😊</div></div>
+                            <div class="photo-frame"><img src="foto2.jpg" alt="Foto"><div class="photo-caption">Lagi Mam 🍝</div></div>
+                            <div class="photo-frame"><img src="foto3.jpg" alt="Foto"><div class="photo-caption">Lagi Nonton Konser 🎶</div></div>
+                            <div class="photo-frame"><img src="foto4.jpg" alt="Foto"><div class="photo-caption">Lagi Ngematcha 🍵</div></div>
+                        </div>
+                    `
             },
             'rundown': {
                 title: 'Rundown',
@@ -1486,10 +1488,12 @@
         function openFullPlayer(event) {
             if (event.target.closest('.mini-btn')) return;
             fullPlayerScreen.classList.add('open');
+            document.getElementById('theme-color-meta').setAttribute('content', '#2564b1');
         }
 
         function closeFullPlayer() {
             fullPlayerScreen.classList.remove('open');
+            document.getElementById('theme-color-meta').setAttribute('content', '#ffb6c1');
         }
 
         dashMusic.addEventListener('timeupdate', () => {
