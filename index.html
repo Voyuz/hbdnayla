@@ -1367,14 +1367,6 @@
             hbdMusic.pause();
             hbdMusic.currentTime = 0;
 
-            dashMusic.muted = false;
-            dashMusic.volume = 1;
-            dashMusic.play().catch(e => console.log("Dash Play failed: " + e));
-            isPlaying = true;
-            
-            document.getElementById('mini-play-btn').innerHTML = iconPause;
-            document.getElementById('full-play-btn').innerHTML = iconPause;
-
             updateDashboardData();
 
             document.getElementById('countdown-screen').classList.remove('bg-animated');
