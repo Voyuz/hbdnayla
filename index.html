@@ -726,7 +726,6 @@
         #full-player-screen {
             position: fixed;
             top: 0;
-            /* Diubah dari 100% */
             left: 0;
             width: 100%;
             height: 100%;
@@ -736,18 +735,16 @@
             transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             display: flex;
             flex-direction: column;
-            padding: 40px 30px;
+            padding: 15px 30px 40px 30px;
+            /* Padding atas dikecilkan supaya garis lebih ke atas */
             color: white;
             box-sizing: border-box;
             transform: translateY(100%);
         }
 
+        /* HANYA ADA SATU KELAS OPEN SEKARANG */
         #full-player-screen.open {
             transform: translateY(0);
-        }
-
-        #full-player-screen.open {
-            transform: translateY(-100%);
         }
 
         .minimize-bar {
@@ -755,7 +752,8 @@
             height: 5px;
             background: rgba(255, 255, 255, 0.4);
             border-radius: 5px;
-            margin: 0 auto 40px auto;
+            margin: 0 auto 30px auto;
+            /* Margin bawah dikecilkan agar posisinya pas */
             cursor: pointer;
         }
 
