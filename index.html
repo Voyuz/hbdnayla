@@ -104,13 +104,16 @@
         }
 
         @keyframes shake {
+
             0%,
             100% {
                 transform: translateX(0);
             }
+
             25% {
                 transform: translateX(-8px);
             }
+
             75% {
                 transform: translateX(8px);
             }
@@ -218,10 +221,12 @@
         }
 
         @keyframes float {
+
             0%,
             100% {
                 transform: translateY(0) scale(1);
             }
+
             50% {
                 transform: translateY(-15px) scale(1.1);
             }
@@ -295,9 +300,11 @@
             0% {
                 background-position: 0% 50%;
             }
+
             50% {
                 background-position: 100% 50%;
             }
+
             100% {
                 background-position: 0% 50%;
             }
@@ -983,10 +990,12 @@
         }
 
         @keyframes pulse {
+
             0%,
             100% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.05);
             }
@@ -1091,8 +1100,8 @@
                 style="font-family: 'Pacifico', cursive; margin-top: 50px; color: var(--pink-dark); font-size: 2.2rem; font-weight: 700; z-index: 2;">
                 Seberapa Bersemangat Kamu Buka Kado Ini?</h3>
             <div class="heart-container">
-                <div class="heart-bg">♥</div>
-                <div class="heart-fill" id="heart-fill">♥</div>
+                <div class="heart-bg">&hearts;&#xFE0E;</div>
+                <div class="heart-fill" id="heart-fill">&hearts;&#xFE0E;</div>
             </div>
             <h2 id="love-percent" style="margin-bottom: 50px;">0%</h2>
             <button class="hold-btn" id="hold-btn">❤</button>
@@ -1228,6 +1237,22 @@
     </div>
 
     <script>
+        let isAudioUnlocked = false;
+
+        function unlockAudio() {
+            if (!isAudioUnlocked) {
+                hbdMusic.play().then(() => hbdMusic.pause()).catch(e => { });
+                dashMusic.play().then(() => dashMusic.pause()).catch(e => { });
+                isAudioUnlocked = true;
+
+                document.removeEventListener('click', unlockAudio);
+                document.removeEventListener('touchstart', unlockAudio);
+            }
+        }
+
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
+
         let currentPin = "";
         const correctPin = "280606";
         const dots = document.querySelectorAll('.dot');
@@ -1476,4 +1501,5 @@
         }
     </script>
 </body>
+
 </html>
