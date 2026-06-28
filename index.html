@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy 20th Birthday Nayla! </title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&display=swap');
+
+        :root {
+            --pink-primary: #ffb6c1;
+            --pink-dark: #ff6b81;
+            --blue-light: #add8e6;
+            --blue-dark: #74b9ff;
+            --text-dark: #2d3436;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--pink-primary), var(--blue-light));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            color: var(--text-dark);
+        }
+
+        #app-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: opacity 0.5s ease;
+            padding: 20px;
+            background: transparent;
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1;
+            display: none !important;
+        }
+
+        .active {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        #pin-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .pin-dots {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+            background: transparent;
+            transition: 0.2s ease-in-out;
+        }
+
+        .dot.filled {
+            background: white;
+        }
+
+        .dot.error {
+            animation: shake 0.4s;
+            border-color: #ff4757;
+            background: #ff4757;
+        }
+
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-8px);
+            }
+            75% {
+                transform: translateX(8px);
+            }
+        }
+
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px 25px;
+            max-width: 290px;
+            width: 100%;
+            margin: 0 auto;
+            align-items: center;
+            justify-items: center;
+        }
+
+        .numpad .num-btn {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: white;
+            cursor: pointer;
+            transition: background 0.1s, transform 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .numpad .num-btn:active {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0.95);
+        }
+
+        .numpad .num {
+            font-size: 2.2rem;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .numpad .del-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            -webkit-tap-highlight-color: transparent;
+            transition: opacity 0.2s;
+        }
+
+        .numpad .del-btn:active {
+            opacity: 0.5;
+        }
+
+        #love-meter-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .sparkle {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+            opacity: 0.8;
+            z-index: 0;
+        }
+
+        .sp-1 {
+            top: 12%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .sp-2 {
+            top: 20%;
+            right: 15%;
+            font-size: 2rem;
+            animation-delay: 0.5s;
+        }
+
+        .sp-3 {
+            bottom: 25%;
+            left: 10%;
+            font-size: 1.2rem;
+            animation-delay: 1s;
+        }
+
+        .sp-4 {
+            bottom: 18%;
+            right: 20%;
+            font-size: 1.8rem;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-15px) scale(1.1);
+            }
+        }
+
+        .heart-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 40px auto;
+            z-index: 2;
+        }
+
+        .heart-bg,
+        .heart-fill {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 300px;
+            line-height: 1;
+            font-family: sans-serif;
+        }
+
+        .heart-bg {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .heart-fill {
+            color: var(--pink-dark);
+            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+            transition: clip-path 0.1s linear;
+            text-shadow: 0 0 25px rgba(255, 107, 129, 0.6);
+        }
+
+        #love-percent {
+            color: var(--pink-dark);
+            margin-bottom: 5px;
+            font-size: 3.5rem;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .hold-btn {
+            background: linear-gradient(135deg, var(--pink-primary), var(--pink-dark));
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 25px rgba(255, 107, 129, 0.5);
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 20px;
+            z-index: 2;
+            touch-action: manipulation;
+        }
+
+        .hold-btn:active {
+            transform: scale(0.9);
+        }
+
+        .bg-animated {
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #a1c4fd, #c2e9fb);
+            background-size: 400% 400%;
+            animation: gradientBG 5s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        #countdown-screen {
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+        }
+
+        .countdown-text {
+            font-size: 10rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            position: absolute;
+        }
+
+        .final-msg {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s;
+            display: none;
+            width: 100%;
+        }
+
+        .final-msg.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .bg-text-wrapper {
+            transition: filter 0.6s, opacity 0.6s;
+            text-align: center;
+        }
+
+        .bg-text-wrapper.blurred {
+            filter: blur(6px);
+            opacity: 0.5;
+        }
+
+        .bg-text-wrapper h1 {
+            font-family: 'Pacifico', cursive;
+            font-weight: normal;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .bg-text-wrapper p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .envelope-wrapper {
+            margin-top: 30px;
+            cursor: pointer;
+            perspective: 1000px;
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 20;
+        }
+
+        .envelope-wrapper.open {
+            transform: translateY(60px);
+        }
+
+        .envelope {
+            width: 300px;
+            height: 190px;
+            background: #ffd32a;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .envelope-front {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid #fdcb6e;
+            border-right: 150px solid #fdcb6e;
+            border-bottom: 95px solid #ffb142;
+            border-top: 95px solid transparent;
+            z-index: 4;
+            border-radius: 0 0 8px 8px;
+            pointer-events: none;
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid #ffda79;
+            transform-origin: top;
+            transition: transform 0.5s ease-in-out;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .envelope-wrapper.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .letter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: white;
+            border-radius: 8px;
+            z-index: 3;
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-dark);
+            padding: 15px 10px;
+            text-align: center;
+        }
+
+        .envelope-wrapper.open .letter {
+            transform: translateY(-210px);
+        }
+
+        .letter h3 {
+            font-family: 'Pacifico', cursive;
+            font-weight: normal;
+            color: var(--pink-dark);
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            margin-top: 0;
+        }
+
+        .letter p {
+            font-size: 0.8rem;
+            line-height: 1.4;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .btn-to-dash {
+            margin-top: 8px;
+            background: var(--pink-dark);
+            color: white;
+            border: none;
+            padding: 3px 16px;
+            font-weight: 700;
+            border-radius: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.6s ease 0.6s;
+            font-size: 0.85rem;
+        }
+
+        .envelope-wrapper.open .btn-to-dash {
+            opacity: 1;
+        }
+
+        #main-dashboard {
+            padding: 40px 20px;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .dashboard-wrapper {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .profile-header h2 {
+            font-family: 'Pacifico', cursive;
+            font-weight: normal;
+            font-size: 2.8rem;
+            color: var(--pink-dark);
+            text-shadow: 1px 1px 2px white;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            background: var(--glass-bg);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+            width: 33%;
+        }
+
+        .stat-item span {
+            display: block;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-item h3 {
+            font-size: 1.2rem;
+            color: var(--pink-dark);
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .stat-item p {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #777;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            padding-bottom: 60px;
+        }
+
+        .menu-card {
+            background: var(--glass-bg);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: left;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-card:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .menu-card .icon {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .menu-card h4 {
+            font-size: 1.05rem;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 450px;
+            padding: 35px 25px;
+            border-radius: 25px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--pink-dark);
+        }
+
+        #modal-title {
+            font-family: 'Pacifico', cursive;
+            font-weight: normal;
+            font-size: 2.2rem;
+            color: var(--pink-dark);
+            margin-bottom: 20px;
+        }
+
+        #modal-body {
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.8;
+            color: var(--text-dark);
+            white-space: pre-line;
+            text-align: justify;
+        }
+
+        .mini-player {
+            width: 100%;
+            max-width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 8px 15px 8px 8px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 35px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .mini-player:active {
+            transform: scale(0.97);
+        }
+
+        .mini-player img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            margin-right: 12px;
+            object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .mini-info {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .mini-info h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2564b1;
+            margin-bottom: 2px;
+            line-height: 1.2;
+        }
+
+        .mini-info p {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #777;
+        }
+
+        .mini-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            color: var(--text-dark);
+        }
+
+        .mini-btn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: #111;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        #full-player-screen {
+            position: fixed;
+            top: 100%;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(180deg, #2564b1 0%, #ffffff 120%);
+            z-index: 300;
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 40px 30px;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        #full-player-screen.open {
+            transform: translateY(-100%);
+        }
+
+        .minimize-bar {
+            width: 40px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 5px;
+            margin: 0 auto 40px auto;
+            cursor: pointer;
+        }
+
+        .full-cover {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            margin: 0 auto 40px auto;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            object-fit: cover;
+        }
+
+        .full-info {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .full-info h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #2564b1;
+        }
+
+        .full-info p {
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+
+        .progress-container {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+
+        .progress-time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .full-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .full-controls button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .full-controls .play-btn-large {
+            font-size: 3.5rem;
+            transition: transform 0.1s;
+        }
+
+        .full-controls .play-btn-large:active {
+            transform: scale(0.9);
+        }
+
+        .full-controls .side-btn {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .photo-gallery {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 5px 25px 5px;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .photo-gallery::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .photo-gallery::-webkit-scrollbar-thumb {
+            background: var(--pink-dark);
+            border-radius: 10px;
+        }
+
+        .photo-gallery::-webkit-scrollbar-track {
+            background: #ffeaa7;
+            border-radius: 10px;
+        }
+
+        .photo-frame {
+            flex: 0 0 auto;
+            width: 200px;
+            height: 240px;
+            background: #FFC0CB;
+            padding: 10px 10px 40px 10px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            scroll-snap-align: center;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .photo-frame:hover {
+            transform: scale(1) translateY(-5px);
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 3px;
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Pacifico', cursive;
+            font-size: 1rem;
+            color: #4A2E35;
+            font-weight: normal;
+        }
+
+        .modal-text-content {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .modal-list {
+            text-align: left;
+            padding-left: 20px;
+            margin-top: 10px;
+            line-height: 1.8;
+        }
+
+        @media (min-width: 768px) {
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+
+            .numpad {
+                max-width: 320px;
+                gap: 20px 30px;
+            }
+
+            .numpad .num-btn {
+                width: 85px;
+                height: 85px;
+            }
+
+            .numpad .num {
+                font-size: 2.5rem;
+            }
+
+            #pin-screen h2 {
+                font-size: 2.5rem;
+                margin-bottom: 40px;
+            }
+
+            .heart-container {
+                width: 350px;
+                height: 350px;
+            }
+
+            .heart-bg,
+            .heart-fill {
+                font-size: 350px;
+            }
+
+            .envelope {
+                width: 440px;
+                height: 280px;
+            }
+
+            .envelope-front {
+                border-left: 220px solid #fdcb6e;
+                border-right: 220px solid #fdcb6e;
+                border-bottom: 140px solid #ffb142;
+                border-top: 140px solid transparent;
+            }
+
+            .flap {
+                border-left: 220px solid transparent;
+                border-right: 220px solid transparent;
+                border-top: 160px solid #ffda79;
+            }
+
+            .envelope-wrapper.open {
+                transform: translateY(80px);
+            }
+
+            .envelope-wrapper.open .letter {
+                transform: translateY(-135px);
+                z-index: 6;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        .birthday-frame {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 2px solid var(--pink-primary);
+            border-radius: 50px;
+            color: var(--pink-dark);
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(255, 182, 193, 0.3);
+            margin-top: 6px;
+            margin-bottom: 18px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .kado-container {
+            text-align: center;
+        }
+
+        .kado-img {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tracking-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 10px;
+            border: 1px solid #eee;
+        }
+
+        .tracking-bar {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .tracking-bar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #ddd;
+            z-index: 1;
+        }
+
+        .track-step {
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #aaa;
+            z-index: 2;
+            background: #f9f9f9;
+            padding: 0 5px;
+        }
+
+        .track-step.active {
+            color: var(--pink-dark);
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+</head>
+
+<body>
+
+    <audio id="hbd-music" src="happy_birthday.mp3" loop></audio>
+    <audio id="dashboard-music" src="satu_satunya_hivi.mp3" loop></audio>
+
+    <div id="app-container">
+
+        <div id="pin-screen" class="screen active">
+            <h2 style="font-family: 'Pacifico', cursive; font-weight: normal; font-size: 2.8rem; color: #ffffff;">For
+                You, Nayla</h2>
+            <p
+                style="font-size: 0.9rem; color: #777; font-weight: 600; z-index: 2; margin-top: 15px; margin-bottom: 20px;">
+                Masukkan Kode Sandi</p>
+            <div class="pin-dots" id="pin-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <div class="numpad">
+                <button class="num-btn" onclick="addPin('1')"><span class="num">1</span></button>
+                <button class="num-btn" onclick="addPin('2')"><span class="num">2</span></button>
+                <button class="num-btn" onclick="addPin('3')"><span class="num">3</span></button>
+                <button class="num-btn" onclick="addPin('4')"><span class="num">4</span></button>
+                <button class="num-btn" onclick="addPin('5')"><span class="num">5</span></button>
+                <button class="num-btn" onclick="addPin('6')"><span class="num">6</span></button>
+                <button class="num-btn" onclick="addPin('7')"><span class="num">7</span></button>
+                <button class="num-btn" onclick="addPin('8')"><span class="num">8</span></button>
+                <button class="num-btn" onclick="addPin('9')"><span class="num">9</span></button>
+                <div style="visibility: hidden;"></div>
+                <button class="num-btn" onclick="addPin('0')"><span class="num">0</span></button>
+                <button class="del-btn" onclick="deletePin()">Hapus</button>
+            </div>
+        </div>
+
+        <div id="love-meter-screen" class="screen hidden">
+            <h3
+                style="font-family: 'Pacifico', cursive; margin-top: 50px; color: var(--pink-dark); font-size: 2.2rem; font-weight: 700; z-index: 2;">
+                Seberapa Bersemangat Kamu Buka Kado Ini?</h3>
+            <div class="heart-container">
+                <div class="heart-bg">♥</div>
+                <div class="heart-fill" id="heart-fill">♥</div>
+            </div>
+            <h2 id="love-percent" style="margin-bottom: 50px;">0%</h2>
+            <button class="hold-btn" id="hold-btn">❤</button>
+            <br><br>
+            <p style="font-size: 0.9rem; color: #777; font-weight: 600; z-index: 2; margin-top: 30px;">Tekan dan tahan
+                tombol di atas</p>
+            <p style="font-size: 0.9rem; color: #777; font-weight: 600; margin-bottom: 30px; z-index: 2;">lepaskan jika
+                sudah selesai</p>
+        </div>
+
+        <div id="countdown-screen" class="screen hidden">
+            <div id="count-3" class="countdown-text">3</div>
+            <div id="count-2" class="countdown-text">2</div>
+            <div id="count-1" class="countdown-text">1</div>
+
+            <div id="final-surprise" class="final-msg">
+                <div class="bg-text-wrapper" id="bg-text">
+                    <h1 style="margin-top: -100px;">Happy Birthday<br>Nayla!</h1>
+                </div>
+
+                <div class="envelope-wrapper" id="envelope-btn" onclick="openEnvelope()">
+                    <div class="envelope">
+                        <div class="flap"></div>
+                        <div class="envelope-front"></div>
+                        <div class="letter">
+                            <h3 style="margin-bottom: 5px;">Kartu Ucapan</h3>
+                            <p style="font-size: 12px;">Selamat ulang tahun yang ke-20 yaa, semoga di umur yang sekarang
+                                selalu diberikan kesehatan dan panjang umur serta semua keinginan yang dimau bisa
+                                tercapai!.</p>
+                            <button class="btn-to-dash" onclick="event.stopPropagation(); goToDashboard();">Masuk ke
+                                dashboard ➔</button>
+                        </div>
+                    </div>
+                </div>
+                <p
+                    style="position: absolute; bottom: 40px; width: 100%; text-align: center; font-size: 0.9rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); letter-spacing: 1px;">
+                    Klik surat di atas untuk membukanyaa
+                </p>
+            </div>
+        </div>
+
+        <div id="main-dashboard" class="screen hidden">
+            <div class="dashboard-wrapper">
+                <div class="profile-header">
+                    <h2 style="margin-bottom: 4px;">Nayla Raissa Putri</h2>
+                    <div class="birthday-frame">
+                        ✨ Happy 20th Birthday! ✨
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <span id="dash-love-icon">💖</span>
+                            <h3 id="dash-love-percent">100%</h3>
+                            <p id="dash-love-desc">SAYANG</p>
+                        </div>
+                        <div class="stat-item"><span>💐</span>
+                            <h3>ROSES</h3>
+                            <p>& LILIES</p>
+                        </div>
+                        <div class="stat-item"><span>🍵</span>
+                            <h3>MATCHA</h3>
+                            <p>FAVORIT</p>
+                        </div>
+                    </div>
+
+                    <div class="mini-player" onclick="openFullPlayer(event)">
+                        <img src="coveralbum.jpg" alt="Album Art">
+                        <div class="mini-info">
+                            <h4>Satu-Satunya</h4>
+                            <p>HIVI!</p>
+                        </div>
+                        <div class="mini-controls">
+                            <button class="mini-btn" id="mini-play-btn" onclick="toggleMusic(event)">▶</button>
+                            <button class="mini-btn" onclick="event.stopPropagation()">⏭</button>
+                        </div>
+                    </div>
+
+                    <div class="menu-grid">
+                        <div class="menu-card" onclick="openMenu('ucapan')">
+                            <div class="icon">💌</div>
+                            <h4>Kartu Ucapan</h4>
+                        </div>
+                        <div class="menu-card" onclick="openMenu('kado')">
+                            <div class="icon">🎁</div>
+                            <h4>Kado Spesial</h4>
+                        </div>
+                        <div class="menu-card" onclick="openMenu('photodump')">
+                            <div class="icon">📸</div>
+                            <h4>Photo Dump</h4>
+                        </div>
+                        <div class="menu-card" onclick="openMenu('rundown')">
+                            <div class="icon">📋</div>
+                            <h4>Rundown</h4>
+                        </div>
+                        <div class="menu-card" onclick="openMenu('dresscode')">
+                            <div class="icon">👗</div>
+                            <h4>Dresscode</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div id="custom-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title">Judul</h3>
+            <div id="modal-body">Isi pesan</div>
+        </div>
+    </div>
+
+    <div id="full-player-screen">
+        <div class="minimize-bar" onclick="closeFullPlayer()"></div>
+        <img class="full-cover" src="coveralbum.jpg" alt="Album Art">
+        <div class="full-info">
+            <h2>Satu-Satunya</h2>
+            <p>HIVI!</p>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="music-progress"></div>
+            </div>
+            <div class="progress-time">
+                <span id="current-time">0:00</span>
+                <span id="total-time">3:31</span>
+            </div>
+        </div>
+        <div class="full-controls">
+            <button class="side-btn">⏮</button>
+            <button class="play-btn-large" id="full-play-btn" onclick="toggleMusic(event)">▶</button>
+            <button class="side-btn">⏭</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPin = "";
+        const correctPin = "280606";
+        const dots = document.querySelectorAll('.dot');
+
+        const menuContents = {
+            'ucapan': {
+                title: 'Kartu Ucapan',
+                body: '<div class="modal-text-content">Selamat ulang tahun nayla! Semoga di umur yang ke-20 ini, aku harap kamu selalu dikelilingi kebahagiaan, sehat selalu, dipermudah segala urusannya, dapet IPK yang diinginkan, dan bisa mencapai semua yang kamu inginkann. <br><b>You deserve the world!</b> 🌍💖<br><br> Aku disini mau kasih beberapa hadiah kecil yang nanti bisa kamu lihat di menu Kado 🎁</div>'
+            },
+            'kado': {
+                title: 'Kado Spesial',
+                body: `
+                    <div class="kado-container">
+                        <img src="kado.jpeg" class="kado-img" alt="Foto Kado">
+                        <p>Kado kamu sedang dalam perjalanan!</p>
+                        <div class="tracking-box">
+                            <p style="font-size: 0.8rem; font-weight: bold;">Status Perjalanan:</p>
+                            <div class="tracking-bar">
+                                <div class="track-step active">Diproses</div>
+                                <div class="track-step active">Dikirim</div>
+                                <div class="track-step">Diterima</div>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #555;">🚚 Alvaro sedang menuju lokasi Nayla!</p>
+                        </div>
+                    </div>
+                `
+            },
+            'photodump': {
+                title: 'Photo Dump',
+                body: `
+                    <div class="photo-gallery">
+                        <div class="photo-frame"><img src="foto1.jpg" alt="Foto"><div class="photo-caption">Lagi Senyum 😊</div></div>
+                        <div class="photo-frame"><img src="foto2.jpg" alt="Foto"><div class="photo-caption">Lagi Mam 🍝</div></div>
+                        <div class="photo-frame"><img src="foto3.jpg" alt="Foto"><div class="photo-caption">Lagi Nonton Konser 🎶</div></div>
+                        <div class="photo-frame"><img src="foto4.jpg" alt="Foto"><div class="photo-caption">Lagi Ngematcha 🍵</div></div>
+                    </div>
+                `
+            },
+            'rundown': {
+                title: 'Rundown',
+                body: '<div style="text-align:left; background: #fff3f5; padding: 15px; border-radius: 10px; border-left: 5px solid var(--pink-dark); line-height:1.8;"><b>1.</b> Jemput Nayla 🚀<br><b>2.</b> Mam 🍕<br><b>3.</b> Photobooth 📸</div>'
+            },
+            'dresscode': {
+                title: 'Dresscode',
+                body: '<div class="modal-text-content">Nanti kita pakai atasan kemeja putih dan bawahan celana biru muda yaa! ✨</div>'
+            }
+        };
+
+        function openMenu(menuId) {
+            const data = menuContents[menuId];
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-body').innerHTML = data.body;
+            document.getElementById('custom-modal').classList.add('show');
+        }
+
+        function closeModal() { document.getElementById('custom-modal').classList.remove('show'); }
+
+        function updateDots(isError = false) {
+            dots.forEach((dot, index) => {
+                if (isError) { dot.classList.add('error'); }
+                else {
+                    dot.classList.remove('error');
+                    if (index < currentPin.length) dot.classList.add('filled');
+                    else dot.classList.remove('filled');
+                }
+            });
+            if (isError) { setTimeout(() => { currentPin = ""; updateDots(); }, 500); }
+        }
+
+        function addPin(num) {
+            if (currentPin.length < 6) {
+                currentPin += num;
+                updateDots();
+                if (currentPin.length === 6) {
+                    if (currentPin === correctPin) {
+                        setTimeout(() => switchScreen('pin-screen', 'love-meter-screen'), 400);
+                    } else { updateDots(true); }
+                }
+            }
+        }
+        function deletePin() { if (currentPin.length > 0) { currentPin = currentPin.slice(0, -1); updateDots(); } }
+
+        const holdBtn = document.getElementById('hold-btn');
+        const heartFill = document.getElementById('heart-fill');
+        const lovePercent = document.getElementById('love-percent');
+
+        let loveValue = 0;
+        let holdInterval;
+        let isLocked = false;
+
+        holdBtn.addEventListener('mousedown', startHold);
+        holdBtn.addEventListener('mouseup', stopHold);
+        holdBtn.addEventListener('mouseleave', stopHold);
+        holdBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
+        holdBtn.addEventListener('touchend', stopHold);
+
+        function startHold() {
+            if (isLocked) return;
+            holdInterval = setInterval(() => {
+                loveValue += 1;
+                if (loveValue >= 100) { loveValue = 100; clearInterval(holdInterval); forceProceed(); }
+                updateHeartUI();
+            }, 30);
+        }
+
+        function stopHold() {
+            clearInterval(holdInterval);
+            if (loveValue > 0 && !isLocked) { forceProceed(); }
+        }
+
+        function forceProceed() {
+            isLocked = true;
+            updateDashboardData();
+            setTimeout(() => { executeCountdown(); }, 1000);
+        }
+
+        function updateHeartUI() {
+            lovePercent.innerText = Math.floor(loveValue) + "%";
+            let clipValue = 100 - loveValue;
+            heartFill.style.clipPath = `polygon(0 ${clipValue}%, 100% ${clipValue}%, 100% 100%, 0 100%)`;
+        }
+
+        function updateDashboardData() {
+            const dashIcon = document.getElementById('dash-love-icon');
+            const dashPercent = document.getElementById('dash-love-percent');
+            const dashDesc = document.getElementById('dash-love-desc');
+
+            dashPercent.innerText = Math.floor(loveValue) + "%";
+            if (loveValue < 50) { dashIcon.innerText = "😴"; dashDesc.innerText = "BIASA AJA NIH?"; }
+            else if (loveValue < 70) { dashIcon.innerText = "👀"; dashDesc.innerText = "MASIH KURANG PENASARAN"; }
+            else if (loveValue < 100) { dashIcon.innerText = "🤩"; dashDesc.innerText = "LUMAYAN PENASARAN"; }
+            else { dashIcon.innerText = "🔥"; dashDesc.innerText = "BERSEMANGAT!"; }
+        }
+
+        const hbdMusic = document.getElementById('hbd-music');
+        let confettiInterval;
+
+        function executeCountdown() {
+            switchScreen('love-meter-screen', 'countdown-screen');
+            document.getElementById('countdown-screen').classList.add('bg-animated');
+
+            hbdMusic.play().catch(e => console.log(e));
+
+            const count3 = document.getElementById('count-3');
+            const count2 = document.getElementById('count-2');
+            const count1 = document.getElementById('count-1');
+            const finalMsg = document.getElementById('final-surprise');
+
+            setTimeout(() => { count3.style.opacity = '1'; }, 500);
+            setTimeout(() => { count3.style.opacity = '0'; }, 1300);
+            setTimeout(() => { count2.style.opacity = '1'; }, 1500);
+            setTimeout(() => { count2.style.opacity = '0'; }, 2300);
+            setTimeout(() => { count1.style.opacity = '1'; }, 2500);
+            setTimeout(() => { count1.style.opacity = '0'; }, 3300);
+
+            setTimeout(() => {
+                finalMsg.classList.add('show');
+
+                let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 105, colors: ['#ffb6c1', '#ff6b81', '#add8e6', '#ffd32a', '#ffffff'] };
+                function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+                confettiInterval = setInterval(function () {
+                    let particleCount = 20;
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                }, 250);
+            }, 3800);
+        }
+
+        function openEnvelope() {
+            document.getElementById('envelope-btn').classList.add('open');
+            document.getElementById('bg-text').classList.add('blurred');
+        }
+
+        function goToDashboard() {
+            clearInterval(confettiInterval);
+            if (typeof confetti !== 'undefined') { confetti.reset(); }
+            hbdMusic.pause();
+
+            updateDashboardData();
+
+            document.getElementById('countdown-screen').classList.remove('bg-animated');
+            switchScreen('countdown-screen', 'main-dashboard');
+        }
+
+        // ================= LOGIKA MUSIC PLAYER (MINI & FULL) =================
+        const dashMusic = document.getElementById('dashboard-music');
+        const miniPlayBtn = document.getElementById('mini-play-btn');
+        const fullPlayBtn = document.getElementById('full-play-btn');
+        const fullPlayerScreen = document.getElementById('full-player-screen');
+        const progressBar = document.getElementById('music-progress');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalTimeEl = document.getElementById('total-time');
+
+        let isPlaying = false;
+
+        function toggleMusic(event) {
+            if (event) event.stopPropagation(); // Mencegah full player terbuka saat mem-pause lagu dari mini player
+            if (isPlaying) {
+                dashMusic.pause();
+                miniPlayBtn.innerText = "▶";
+                fullPlayBtn.innerText = "▶";
+            } else {
+                dashMusic.play().catch(e => console.log(e));
+                miniPlayBtn.innerText = "⏸";
+                fullPlayBtn.innerText = "⏸";
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function openFullPlayer(event) {
+            if (event.target.closest('.mini-btn')) return;
+            fullPlayerScreen.classList.add('open');
+        }
+
+        function closeFullPlayer() {
+            fullPlayerScreen.classList.remove('open');
+        }
+
+        dashMusic.addEventListener('timeupdate', () => {
+            if (dashMusic.duration) {
+                const progressPercent = (dashMusic.currentTime / dashMusic.duration) * 100;
+                progressBar.style.width = progressPercent + "%";
+
+                let currentMins = Math.floor(dashMusic.currentTime / 60);
+                let currentSecs = Math.floor(dashMusic.currentTime % 60);
+                if (currentSecs < 10) currentSecs = "0" + currentSecs;
+                currentTimeEl.innerText = currentMins + ":" + currentSecs;
+            }
+        });
+
+        dashMusic.addEventListener('loadedmetadata', () => {
+            let totalMins = Math.floor(dashMusic.duration / 60);
+            let totalSecs = Math.floor(dashMusic.duration % 60);
+            if (totalSecs < 10) totalSecs = "0" + totalSecs;
+            totalTimeEl.innerText = totalMins + ":" + totalSecs;
+        });
+
+        function switchScreen(hideId, showId) {
+            document.getElementById(hideId).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(hideId).classList.add('hidden');
+                document.getElementById(showId).classList.remove('hidden');
+                setTimeout(() => { document.getElementById(showId).classList.add('active'); }, 50);
+            }, 500);
+        }
+    </script>
+</body>
+</html>
