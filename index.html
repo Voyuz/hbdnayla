@@ -725,10 +725,12 @@
 
         #full-player-screen {
             position: fixed;
-            top: 100%;
+            top: 0;
+            /* Diubah dari 100% */
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
             background: linear-gradient(180deg, #2564b1 0%, #ffffff 120%);
             z-index: 300;
             transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -737,6 +739,11 @@
             padding: 40px 30px;
             color: white;
             box-sizing: border-box;
+            transform: translateY(100%);
+        }
+
+        #full-player-screen.open {
+            transform: translateY(0);
         }
 
         #full-player-screen.open {
@@ -1173,8 +1180,9 @@
                             <p>HIVI!</p>
                         </div>
                         <div class="mini-controls">
-                            <button class="mini-btn" id="mini-play-btn" onclick="toggleMusic(event)">▶</button>
-                            <button class="mini-btn" onclick="event.stopPropagation()">⏭</button>
+                            <button class="mini-btn" id="mini-play-btn"
+                                onclick="toggleMusic(event)">&#x25B6;&#xFE0E;</button>
+                            <button class="mini-btn" onclick="event.stopPropagation()">&#x23ED;&#xFE0E;</button>
                         </div>
                     </div>
 
@@ -1230,9 +1238,9 @@
             </div>
         </div>
         <div class="full-controls">
-            <button class="side-btn">⏮</button>
-            <button class="play-btn-large" id="full-play-btn" onclick="toggleMusic(event)">▶</button>
-            <button class="side-btn">⏭</button>
+            <button class="side-btn">&#x23EE;&#xFE0E;</button>
+            <button class="play-btn-large" id="full-play-btn" onclick="toggleMusic(event)">&#x25B6;&#xFE0E;</button>
+            <button class="side-btn">&#x23ED;&#xFE0E;</button>
         </div>
     </div>
 
@@ -1442,7 +1450,7 @@
         function goToDashboard() {
             clearInterval(confettiInterval);
             if (typeof confetti !== 'undefined') { confetti.reset(); }
-            
+
             hbdMusic.pause();
             hbdMusic.currentTime = 0;
 
@@ -1466,12 +1474,12 @@
             if (event) event.stopPropagation();
             if (isPlaying) {
                 dashMusic.pause();
-                miniPlayBtn.innerText = "▶";
-                fullPlayBtn.innerText = "▶";
+                miniPlayBtn.innerHTML = "&#x25B6;&#xFE0E;";
+                fullPlayBtn.innerHTML = "&#x25B6;&#xFE0E;";
             } else {
                 dashMusic.play().catch(e => console.log(e));
-                miniPlayBtn.innerText = "⏸";
-                fullPlayBtn.innerText = "⏸";
+                miniPlayBtn.innerHTML = "&#x23F8;&#xFE0E;";
+                fullPlayBtn.innerHTML = "&#x23F8;&#xFE0E;";
             }
             isPlaying = !isPlaying;
         }
