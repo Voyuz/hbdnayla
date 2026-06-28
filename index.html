@@ -1241,13 +1241,33 @@
 
         function unlockAudio() {
             if (!isAudioUnlocked) {
-                hbdMusic.play().then(() => hbdMusic.pause()).catch(e => { });
-                dashMusic.play().then(() => dashMusic.pause()).catch(e => { });
-                isAudioUnlocked = true;
+                hbdMusic.muted = true;
+                dashMusic.muted = true;
 
+                hbdMusic.play().then(() => {
+                    hbdMusic.pause();
+                    hbdMusic.currentTime = 0;
+                    hbdMusic.muted = false;
+                }).catch(e => { });
+
+                dashMusic.play().then(() => {
+                    dashMusic.pause();
+                    dashMusic.currentTime = 0;
+                    dashMusic.muted = false;
+                }).catch(e => { });
+
+                isAudioUnlocked = true;
                 document.removeEventListener('click', unlockAudio);
                 document.removeEventListener('touchstart', unlockAudio);
             }
+        }
+
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
+            }
+
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
         }
 
         document.addEventListener('click', unlockAudio);
@@ -1431,6 +1451,7 @@
             clearInterval(confettiInterval);
             if (typeof confetti !== 'undefined') { confetti.reset(); }
             hbdMusic.pause();
+            hbdMusic.currentTime = 0;
 
             updateDashboardData();
 
@@ -1438,7 +1459,6 @@
             switchScreen('countdown-screen', 'main-dashboard');
         }
 
-        // ================= LOGIKA MUSIC PLAYER (MINI & FULL) =================
         const dashMusic = document.getElementById('dashboard-music');
         const miniPlayBtn = document.getElementById('mini-play-btn');
         const fullPlayBtn = document.getElementById('full-play-btn');
@@ -1450,7 +1470,7 @@
         let isPlaying = false;
 
         function toggleMusic(event) {
-            if (event) event.stopPropagation(); // Mencegah full player terbuka saat mem-pause lagu dari mini player
+            if (event) event.stopPropagation();
             if (isPlaying) {
                 dashMusic.pause();
                 miniPlayBtn.innerText = "▶";
