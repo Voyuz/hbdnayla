@@ -671,7 +671,7 @@
         .mini-btn {
             background: none;
             border: none;
-            font-size: 1.4rem; /* Disesuaikan agar pas dengan SVG Refresh */
+            font-size: 1.4rem; 
             color: #111;
             cursor: pointer;
             padding: 5px;
@@ -1190,59 +1190,266 @@
             </div>
         </div>
         <div class="full-controls">
+            <!-- Tombol transparan sebagai penyeimbang layout Flexbox -->
             <button class="side-btn" style="visibility: hidden; pointer-events: none;">
-                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
             </button>
             
             <button class="play-btn-large" id="full-play-btn" onclick="toggleMusic(event)">
                 <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
 
+            <!-- Tombol Refresh (Restart) yang Sebenarnya -->
             <button class="side-btn" onclick="restartMusic(event)">
-                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
             </button>
         </div>
     </div>
 
     <script>
-        let isAudioUnlocked = false;
+        const hbdMusic = document.getElementById('hbd-music');
+        const dashMusic = document.getElementById('dashboard-music');
+        const dots = document.querySelectorAll('.dot');
+        const correctPin = "280606";
+        let currentPin = "";
+        
+        let loveValue = 0;
+        let holdInterval;
+        let isLocked = false;
+        let isPlaying = false;
 
-        // --- SISTEM BUKA KUNCI AUDIO KHUSUS ANDROID & IOS ---
-        function unlockAudio() {
-            if (!isAudioUnlocked) {
-                hbdMusic.muted = true;
-                dashMusic.muted = true;
+        const iconPlay = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+        const iconPause = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
 
-                let p1 = hbdMusic.play();
-                if (p1 !== undefined) {
-                    p1.then(() => {
-                        hbdMusic.pause();
-                        hbdMusic.currentTime = 0;
-                        hbdMusic.muted = false;
-                    }).catch(() => {});
+        function addPin(num) {
+            if (currentPin.length === 0) {
+                hbdMusic.load();
+                dashMusic.load();
+            }
+
+            if (currentPin.length < 6) {
+                currentPin += num;
+                updateDots();
+                if (currentPin.length === 6) {
+                    if (currentPin === correctPin) {
+                        setTimeout(() => switchScreen('pin-screen', 'love-meter-screen'), 400);
+                    } else { updateDots(true); }
                 }
-
-                let p2 = dashMusic.play();
-                if (p2 !== undefined) {
-                    p2.then(() => {
-                        dashMusic.pause();
-                        dashMusic.currentTime = 0;
-                        dashMusic.muted = false;
-                    }).catch(() => {});
-                }
-
-                isAudioUnlocked = true;
-                document.removeEventListener('click', unlockAudio);
-                document.removeEventListener('touchstart', unlockAudio);
             }
         }
 
-        document.addEventListener('click', unlockAudio);
-        document.addEventListener('touchstart', unlockAudio);
+        function deletePin() { 
+            if (currentPin.length > 0) { 
+                currentPin = currentPin.slice(0, -1); 
+                updateDots(); 
+            } 
+        }
 
-        let currentPin = "";
-        const correctPin = "280606";
-        const dots = document.querySelectorAll('.dot');
+        function updateDots(isError = false) {
+            dots.forEach((dot, index) => {
+                if (isError) { dot.classList.add('error'); }
+                else {
+                    dot.classList.remove('error');
+                    if (index < currentPin.length) dot.classList.add('filled');
+                    else dot.classList.remove('filled');
+                }
+            });
+            if (isError) { setTimeout(() => { currentPin = ""; updateDots(); }, 500); }
+        }
+
+        const holdBtn = document.getElementById('hold-btn');
+        const heartFill = document.getElementById('heart-fill');
+        const lovePercent = document.getElementById('love-percent');
+
+        holdBtn.addEventListener('mousedown', startHold);
+        holdBtn.addEventListener('mouseup', stopHold);
+        holdBtn.addEventListener('mouseleave', stopHold);
+        holdBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
+        holdBtn.addEventListener('touchend', stopHold);
+
+        function startHold() {
+            if (isLocked) return;
+            
+            hbdMusic.muted = true;
+            hbdMusic.volume = 0;
+            let playPromise = hbdMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => { console.log("Audio block: " + e) });
+            }
+
+            holdInterval = setInterval(() => {
+                loveValue += 1;
+                if (loveValue >= 100) { 
+                    loveValue = 100; 
+                    clearInterval(holdInterval); 
+                    forceProceed(); 
+                }
+                updateHeartUI();
+            }, 30);
+        }
+
+        function stopHold() {
+            clearInterval(holdInterval);
+            if (loveValue < 100 && !isLocked) {
+                hbdMusic.pause();
+            } else if (loveValue >= 100 && !isLocked) {
+                forceProceed();
+            }
+        }
+
+        function forceProceed() {
+            isLocked = true;
+            updateDashboardData();
+            setTimeout(() => { executeCountdown(); }, 1000);
+        }
+
+        function updateHeartUI() {
+            lovePercent.innerText = Math.floor(loveValue) + "%";
+            let clipValue = 100 - loveValue;
+            heartFill.style.clipPath = `polygon(0 ${clipValue}%, 100% ${clipValue}%, 100% 100%, 0 100%)`;
+        }
+
+        function updateDashboardData() {
+            const dashIcon = document.getElementById('dash-love-icon');
+            const dashPercent = document.getElementById('dash-love-percent');
+            const dashDesc = document.getElementById('dash-love-desc');
+
+            dashPercent.innerText = Math.floor(loveValue) + "%";
+            if (loveValue < 50) { dashIcon.innerText = "😴"; dashDesc.innerText = "BIASA AJA NIH?"; }
+            else if (loveValue < 70) { dashIcon.innerText = "👀"; dashDesc.innerText = "MASIH KURANG PENASARAN"; }
+            else if (loveValue < 100) { dashIcon.innerText = "🤩"; dashDesc.innerText = "LUMAYAN PENASARAN"; }
+            else { dashIcon.innerText = "🔥"; dashDesc.innerText = "BERSEMANGAT!"; }
+        }
+
+        let confettiInterval;
+
+        function executeCountdown() {
+            switchScreen('love-meter-screen', 'countdown-screen');
+            document.getElementById('countdown-screen').classList.add('bg-animated');
+
+            hbdMusic.muted = false;
+            hbdMusic.volume = 1;
+            hbdMusic.currentTime = 0;
+            hbdMusic.play().catch(e => console.log("Play failed: " + e));
+
+            const count3 = document.getElementById('count-3');
+            const count2 = document.getElementById('count-2');
+            const count1 = document.getElementById('count-1');
+            const finalMsg = document.getElementById('final-surprise');
+
+            setTimeout(() => { count3.style.opacity = '1'; }, 500);
+            setTimeout(() => { count3.style.opacity = '0'; }, 1300);
+            setTimeout(() => { count2.style.opacity = '1'; }, 1500);
+            setTimeout(() => { count2.style.opacity = '0'; }, 2300);
+            setTimeout(() => { count1.style.opacity = '1'; }, 2500);
+            setTimeout(() => { count1.style.opacity = '0'; }, 3300);
+
+            setTimeout(() => {
+                finalMsg.classList.add('show');
+                let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 105, colors: ['#ffb6c1', '#ff6b81', '#add8e6', '#ffd32a', '#ffffff'] };
+                function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+                confettiInterval = setInterval(function () {
+                    let particleCount = 20;
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                }, 250);
+            }, 3800);
+        }
+
+        function openEnvelope() {
+            document.getElementById('envelope-btn').classList.add('open');
+            document.getElementById('bg-text').classList.add('blurred');
+        }
+
+        function goToDashboard() {
+            clearInterval(confettiInterval);
+            if (typeof confetti !== 'undefined') { confetti.reset(); }
+
+            hbdMusic.pause();
+            hbdMusic.currentTime = 0;
+
+            dashMusic.muted = false;
+            dashMusic.volume = 1;
+            dashMusic.play().catch(e => console.log("Dash Play failed: " + e));
+            isPlaying = true;
+            
+            document.getElementById('mini-play-btn').innerHTML = iconPause;
+            document.getElementById('full-play-btn').innerHTML = iconPause;
+
+            updateDashboardData();
+
+            document.getElementById('countdown-screen').classList.remove('bg-animated');
+            switchScreen('countdown-screen', 'main-dashboard');
+        }
+
+        const miniPlayBtn = document.getElementById('mini-play-btn');
+        const fullPlayBtn = document.getElementById('full-play-btn');
+        const fullPlayerScreen = document.getElementById('full-player-screen');
+        const progressBar = document.getElementById('music-progress');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalTimeEl = document.getElementById('total-time');
+
+        function toggleMusic(event) {
+            if (event) event.stopPropagation();
+            if (isPlaying) {
+                dashMusic.pause();
+                miniPlayBtn.innerHTML = iconPlay;
+                fullPlayBtn.innerHTML = iconPlay;
+            } else {
+                dashMusic.play().catch(e => console.log(e));
+                miniPlayBtn.innerHTML = iconPause;
+                fullPlayBtn.innerHTML = iconPause;
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function restartMusic(event) {
+            if (event) event.stopPropagation();
+            dashMusic.currentTime = 0;
+            if (!isPlaying) {
+                dashMusic.play().catch(e => console.log(e));
+                isPlaying = true;
+                miniPlayBtn.innerHTML = iconPause;
+                fullPlayBtn.innerHTML = iconPause;
+            }
+        }
+
+        dashMusic.addEventListener('ended', () => {
+            isPlaying = false;
+            miniPlayBtn.innerHTML = iconPlay;
+            fullPlayBtn.innerHTML = iconPlay;
+        });
+
+        function openFullPlayer(event) {
+            if (event.target.closest('.mini-btn')) return;
+            fullPlayerScreen.classList.add('open');
+            document.getElementById('theme-color-meta').setAttribute('content', '#2564b1');
+        }
+
+        function closeFullPlayer() {
+            fullPlayerScreen.classList.remove('open');
+            document.getElementById('theme-color-meta').setAttribute('content', '#ffb6c1');
+        }
+
+        dashMusic.addEventListener('timeupdate', () => {
+            if (dashMusic.duration) {
+                const progressPercent = (dashMusic.currentTime / dashMusic.duration) * 100;
+                progressBar.style.width = progressPercent + "%";
+
+                let currentMins = Math.floor(dashMusic.currentTime / 60);
+                let currentSecs = Math.floor(dashMusic.currentTime % 60);
+                if (currentSecs < 10) currentSecs = "0" + currentSecs;
+                currentTimeEl.innerText = currentMins + ":" + currentSecs;
+            }
+        });
+
+        dashMusic.addEventListener('loadedmetadata', () => {
+            let totalMins = Math.floor(dashMusic.duration / 60);
+            let totalSecs = Math.floor(dashMusic.duration % 60);
+            if (totalSecs < 10) totalSecs = "0" + totalSecs;
+            totalTimeEl.innerText = totalMins + ":" + totalSecs;
+        });
 
         const menuContents = {
             'ucapan': {
@@ -1296,216 +1503,6 @@
         }
 
         function closeModal() { document.getElementById('custom-modal').classList.remove('show'); }
-
-        function updateDots(isError = false) {
-            dots.forEach((dot, index) => {
-                if (isError) { dot.classList.add('error'); }
-                else {
-                    dot.classList.remove('error');
-                    if (index < currentPin.length) dot.classList.add('filled');
-                    else dot.classList.remove('filled');
-                }
-            });
-            if (isError) { setTimeout(() => { currentPin = ""; updateDots(); }, 500); }
-        }
-
-        function addPin(num) {
-            if (currentPin.length < 6) {
-                currentPin += num;
-                updateDots();
-                if (currentPin.length === 6) {
-                    if (currentPin === correctPin) {
-                        setTimeout(() => switchScreen('pin-screen', 'love-meter-screen'), 400);
-                    } else { updateDots(true); }
-                }
-            }
-        }
-        function deletePin() { if (currentPin.length > 0) { currentPin = currentPin.slice(0, -1); updateDots(); } }
-
-        const holdBtn = document.getElementById('hold-btn');
-        const heartFill = document.getElementById('heart-fill');
-        const lovePercent = document.getElementById('love-percent');
-
-        let loveValue = 0;
-        let holdInterval;
-        let isLocked = false;
-
-        holdBtn.addEventListener('mousedown', startHold);
-        holdBtn.addEventListener('mouseup', stopHold);
-        holdBtn.addEventListener('mouseleave', stopHold);
-        holdBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
-        holdBtn.addEventListener('touchend', stopHold);
-
-        function startHold() {
-            if (isLocked) return;
-            
-            // Jaminan HBD music bisa dimainkan di Android
-            hbdMusic.play().then(() => hbdMusic.pause()).catch(e=>{});
-
-            holdInterval = setInterval(() => {
-                loveValue += 1;
-                if (loveValue >= 100) { loveValue = 100; clearInterval(holdInterval); forceProceed(); }
-                updateHeartUI();
-            }, 30);
-        }
-
-        function stopHold() {
-            clearInterval(holdInterval);
-            if (loveValue > 0 && !isLocked) { forceProceed(); }
-        }
-
-        function forceProceed() {
-            isLocked = true;
-            updateDashboardData();
-            setTimeout(() => { executeCountdown(); }, 1000);
-        }
-
-        function updateHeartUI() {
-            lovePercent.innerText = Math.floor(loveValue) + "%";
-            let clipValue = 100 - loveValue;
-            heartFill.style.clipPath = `polygon(0 ${clipValue}%, 100% ${clipValue}%, 100% 100%, 0 100%)`;
-        }
-
-        function updateDashboardData() {
-            const dashIcon = document.getElementById('dash-love-icon');
-            const dashPercent = document.getElementById('dash-love-percent');
-            const dashDesc = document.getElementById('dash-love-desc');
-
-            dashPercent.innerText = Math.floor(loveValue) + "%";
-            if (loveValue < 50) { dashIcon.innerText = "😴"; dashDesc.innerText = "BIASA AJA NIH?"; }
-            else if (loveValue < 70) { dashIcon.innerText = "👀"; dashDesc.innerText = "MASIH KURANG PENASARAN"; }
-            else if (loveValue < 100) { dashIcon.innerText = "🤩"; dashDesc.innerText = "LUMAYAN PENASARAN"; }
-            else { dashIcon.innerText = "🔥"; dashDesc.innerText = "BERSEMANGAT!"; }
-        }
-
-        const hbdMusic = document.getElementById('hbd-music');
-        let confettiInterval;
-
-        function executeCountdown() {
-            switchScreen('love-meter-screen', 'countdown-screen');
-            document.getElementById('countdown-screen').classList.add('bg-animated');
-
-            hbdMusic.play().catch(e => console.log(e));
-
-            const count3 = document.getElementById('count-3');
-            const count2 = document.getElementById('count-2');
-            const count1 = document.getElementById('count-1');
-            const finalMsg = document.getElementById('final-surprise');
-
-            setTimeout(() => { count3.style.opacity = '1'; }, 500);
-            setTimeout(() => { count3.style.opacity = '0'; }, 1300);
-            setTimeout(() => { count2.style.opacity = '1'; }, 1500);
-            setTimeout(() => { count2.style.opacity = '0'; }, 2300);
-            setTimeout(() => { count1.style.opacity = '1'; }, 2500);
-            setTimeout(() => { count1.style.opacity = '0'; }, 3300);
-
-            setTimeout(() => {
-                finalMsg.classList.add('show');
-
-                let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 105, colors: ['#ffb6c1', '#ff6b81', '#add8e6', '#ffd32a', '#ffffff'] };
-                function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-                confettiInterval = setInterval(function () {
-                    let particleCount = 20;
-                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-                }, 250);
-            }, 3800);
-        }
-
-        function openEnvelope() {
-            document.getElementById('envelope-btn').classList.add('open');
-            document.getElementById('bg-text').classList.add('blurred');
-        }
-
-        // --- IKON SVG MUSIC PLAYER ---
-        const iconPlay = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-        const iconPause = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-
-        function goToDashboard() {
-            clearInterval(confettiInterval);
-            if (typeof confetti !== 'undefined') { confetti.reset(); }
-
-            hbdMusic.pause();
-            hbdMusic.currentTime = 0;
-
-            updateDashboardData();
-
-            document.getElementById('countdown-screen').classList.remove('bg-animated');
-            switchScreen('countdown-screen', 'main-dashboard');
-        }
-
-        const dashMusic = document.getElementById('dashboard-music');
-        const miniPlayBtn = document.getElementById('mini-play-btn');
-        const fullPlayBtn = document.getElementById('full-play-btn');
-        const fullPlayerScreen = document.getElementById('full-player-screen');
-        const progressBar = document.getElementById('music-progress');
-        const currentTimeEl = document.getElementById('current-time');
-        const totalTimeEl = document.getElementById('total-time');
-
-        let isPlaying = false;
-
-        function toggleMusic(event) {
-            if (event) event.stopPropagation();
-            if (isPlaying) {
-                dashMusic.pause();
-                miniPlayBtn.innerHTML = iconPlay;
-                fullPlayBtn.innerHTML = iconPlay;
-            } else {
-                dashMusic.play().catch(e => console.log(e));
-                miniPlayBtn.innerHTML = iconPause;
-                fullPlayBtn.innerHTML = iconPause;
-            }
-            isPlaying = !isPlaying;
-        }
-
-        // --- FUNGSI REFRESH LAGU ---
-        function restartMusic(event) {
-            if (event) event.stopPropagation();
-            dashMusic.currentTime = 0;
-            if (!isPlaying) {
-                dashMusic.play().catch(e => console.log(e));
-                isPlaying = true;
-                miniPlayBtn.innerHTML = iconPause;
-                fullPlayBtn.innerHTML = iconPause;
-            }
-        }
-
-        function openFullPlayer(event) {
-            if (event.target.closest('.mini-btn')) return;
-            fullPlayerScreen.classList.add('open');
-            document.getElementById('theme-color-meta').setAttribute('content', '#2564b1');
-        }
-
-        function closeFullPlayer() {
-            fullPlayerScreen.classList.remove('open');
-            document.getElementById('theme-color-meta').setAttribute('content', '#ffb6c1');
-        }
-
-        dashMusic.addEventListener('timeupdate', () => {
-            if (dashMusic.duration) {
-                const progressPercent = (dashMusic.currentTime / dashMusic.duration) * 100;
-                progressBar.style.width = progressPercent + "%";
-
-                let currentMins = Math.floor(dashMusic.currentTime / 60);
-                let currentSecs = Math.floor(dashMusic.currentTime % 60);
-                if (currentSecs < 10) currentSecs = "0" + currentSecs;
-                currentTimeEl.innerText = currentMins + ":" + currentSecs;
-            }
-        });
-
-        dashMusic.addEventListener('loadedmetadata', () => {
-            let totalMins = Math.floor(dashMusic.duration / 60);
-            let totalSecs = Math.floor(dashMusic.duration % 60);
-            if (totalSecs < 10) totalSecs = "0" + totalSecs;
-            totalTimeEl.innerText = totalMins + ":" + totalSecs;
-        });
-
-        dashMusic.addEventListener('ended', () => {
-            isPlaying = false;
-            miniPlayBtn.innerHTML = iconPlay;
-            fullPlayBtn.innerHTML = iconPlay;
-        });
 
         function switchScreen(hideId, showId) {
             document.getElementById(hideId).classList.remove('active');
