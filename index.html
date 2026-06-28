@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
     <meta name="theme-color" content="#ffb6c1" id="theme-color-meta">
     <title>Happy 20th Birthday Nayla! </title>
     <style>
@@ -106,19 +105,9 @@
         }
 
         @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-8px);
-            }
-
-            75% {
-                transform: translateX(8px);
-            }
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
         .numpad {
@@ -195,43 +184,14 @@
             z-index: 0;
         }
 
-        .sp-1 {
-            top: 12%;
-            left: 15%;
-            animation-delay: 0s;
-        }
-
-        .sp-2 {
-            top: 20%;
-            right: 15%;
-            font-size: 2rem;
-            animation-delay: 0.5s;
-        }
-
-        .sp-3 {
-            bottom: 25%;
-            left: 10%;
-            font-size: 1.2rem;
-            animation-delay: 1s;
-        }
-
-        .sp-4 {
-            bottom: 18%;
-            right: 20%;
-            font-size: 1.8rem;
-            animation-delay: 1.5s;
-        }
+        .sp-1 { top: 12%; left: 15%; animation-delay: 0s; }
+        .sp-2 { top: 20%; right: 15%; font-size: 2rem; animation-delay: 0.5s; }
+        .sp-3 { bottom: 25%; left: 10%; font-size: 1.2rem; animation-delay: 1s; }
+        .sp-4 { bottom: 18%; right: 20%; font-size: 1.8rem; animation-delay: 1.5s; }
 
         @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0) scale(1);
-            }
-
-            50% {
-                transform: translateY(-15px) scale(1.1);
-            }
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.1); }
         }
 
         .heart-container {
@@ -299,17 +259,9 @@
         }
 
         @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         #countdown-screen {
@@ -723,6 +675,9 @@
             color: #111;
             cursor: pointer;
             padding: 5px;
+            display: flex; /* Centering SVG */
+            align-items: center;
+            justify-content: center;
         }
 
         #full-player-screen {
@@ -737,14 +692,12 @@
             transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             display: flex;
             flex-direction: column;
-            padding: 15px 30px 40px 30px;
-            /* Padding atas dikecilkan supaya garis lebih ke atas */
+            padding: 15px 30px 40px 30px; 
             color: white;
             box-sizing: border-box;
             transform: translateY(100%);
         }
 
-        /* HANYA ADA SATU KELAS OPEN SEKARANG */
         #full-player-screen.open {
             transform: translateY(0);
         }
@@ -754,8 +707,7 @@
             height: 5px;
             background: rgba(255, 255, 255, 0.4);
             border-radius: 5px;
-            margin: 0 auto 30px auto;
-            /* Margin bawah dikecilkan agar posisinya pas */
+            margin: 0 auto 30px auto; 
             cursor: pointer;
         }
 
@@ -828,6 +780,9 @@
             border: none;
             color: white;
             cursor: pointer;
+            display: flex; /* Centering SVG */
+            align-items: center;
+            justify-content: center;
         }
 
         .full-controls .play-btn-large {
@@ -998,15 +953,8 @@
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .kado-container {
@@ -1181,9 +1129,13 @@
                             <p>HIVI!</p>
                         </div>
                         <div class="mini-controls">
-                            <button class="mini-btn" id="mini-play-btn"
-                                onclick="toggleMusic(event)">&#x25B6;&#xFE0E;</button>
-                            <button class="mini-btn" onclick="event.stopPropagation()">&#x23ED;&#xFE0E;</button>
+                            <!-- Tombol SVG (Aman dari Emoji Android/iOS) -->
+                            <button class="mini-btn" id="mini-play-btn" onclick="toggleMusic(event)">
+                                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </button>
+                            <button class="mini-btn" onclick="event.stopPropagation()">
+                                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                            </button>
                         </div>
                     </div>
 
@@ -1239,30 +1191,39 @@
             </div>
         </div>
         <div class="full-controls">
-            <button class="side-btn">&#x23EE;&#xFE0E;</button>
-            <button class="play-btn-large" id="full-play-btn" onclick="toggleMusic(event)">&#x25B6;&#xFE0E;</button>
-            <button class="side-btn">&#x23ED;&#xFE0E;</button>
+            <!-- Tombol SVG (Aman dari Emoji Android/iOS) -->
+            <button class="side-btn">
+                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+            </button>
+            <button class="play-btn-large" id="full-play-btn" onclick="toggleMusic(event)">
+                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="side-btn">
+                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            </button>
         </div>
     </div>
 
     <script>
         let isAudioUnlocked = false;
 
+        // --- TRIK BARU AUDIO ---
+        // Menggunakan volume = 0 agar Android memperbolehkan audio tanpa memblokir Autoplay
         function unlockAudio() {
             if (!isAudioUnlocked) {
-                hbdMusic.muted = true;
-                dashMusic.muted = true;
+                hbdMusic.volume = 0; 
+                dashMusic.volume = 0;
 
                 hbdMusic.play().then(() => {
                     hbdMusic.pause();
                     hbdMusic.currentTime = 0;
-                    hbdMusic.muted = false;
+                    hbdMusic.volume = 1;
                 }).catch(e => { });
 
                 dashMusic.play().then(() => {
                     dashMusic.pause();
                     dashMusic.currentTime = 0;
-                    dashMusic.muted = false;
+                    dashMusic.volume = 1;
                 }).catch(e => { });
 
                 isAudioUnlocked = true;
@@ -1286,31 +1247,31 @@
             'kado': {
                 title: 'Kado Spesial',
                 body: `
-                        <div class="kado-container">
-                            <img src="kado.jpeg" class="kado-img" alt="Foto Kado">
-                            <p>Kado kamu sedang dalam perjalanan!</p>
-                            <div class="tracking-box">
-                                <p style="font-size: 0.8rem; font-weight: bold;">Status Perjalanan:</p>
-                                <div class="tracking-bar">
-                                    <div class="track-step active">Diproses</div>
-                                    <div class="track-step active">Dikirim</div>
-                                    <div class="track-step">Diterima</div>
-                                </div>
-                                <p style="font-size: 0.8rem; color: #555;">🚚 Alvaro sedang menuju lokasi Nayla!</p>
+                    <div class="kado-container">
+                        <img src="kado.jpeg" class="kado-img" alt="Foto Kado">
+                        <p>Kado kamu sedang dalam perjalanan!</p>
+                        <div class="tracking-box">
+                            <p style="font-size: 0.8rem; font-weight: bold;">Status Perjalanan:</p>
+                            <div class="tracking-bar">
+                                <div class="track-step active">Diproses</div>
+                                <div class="track-step active">Dikirim</div>
+                                <div class="track-step">Diterima</div>
                             </div>
+                            <p style="font-size: 0.8rem; color: #555;">🚚 Alvaro sedang menuju lokasi Nayla!</p>
                         </div>
-                    `
+                    </div>
+                `
             },
             'photodump': {
                 title: 'Photo Dump',
                 body: `
-                        <div class="photo-gallery">
-                            <div class="photo-frame"><img src="foto1.jpg" alt="Foto"><div class="photo-caption">Lagi Senyum 😊</div></div>
-                            <div class="photo-frame"><img src="foto2.jpg" alt="Foto"><div class="photo-caption">Lagi Mam 🍝</div></div>
-                            <div class="photo-frame"><img src="foto3.jpg" alt="Foto"><div class="photo-caption">Lagi Nonton Konser 🎶</div></div>
-                            <div class="photo-frame"><img src="foto4.jpg" alt="Foto"><div class="photo-caption">Lagi Ngematcha 🍵</div></div>
-                        </div>
-                    `
+                    <div class="photo-gallery">
+                        <div class="photo-frame"><img src="foto1.jpg" alt="Foto"><div class="photo-caption">Lagi Senyum 😊</div></div>
+                        <div class="photo-frame"><img src="foto2.jpg" alt="Foto"><div class="photo-caption">Lagi Mam 🍝</div></div>
+                        <div class="photo-frame"><img src="foto3.jpg" alt="Foto"><div class="photo-caption">Lagi Nonton Konser 🎶</div></div>
+                        <div class="photo-frame"><img src="foto4.jpg" alt="Foto"><div class="photo-caption">Lagi Ngematcha 🍵</div></div>
+                    </div>
+                `
             },
             'rundown': {
                 title: 'Rundown',
@@ -1448,12 +1409,23 @@
             document.getElementById('bg-text').classList.add('blurred');
         }
 
+        // --- IKON SVG SEBAGAI VARIABEL ---
+        const iconPlay = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+        const iconPause = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+
         function goToDashboard() {
             clearInterval(confettiInterval);
             if (typeof confetti !== 'undefined') { confetti.reset(); }
 
             hbdMusic.pause();
             hbdMusic.currentTime = 0;
+
+            dashMusic.play().catch(e => console.log(e));
+            isPlaying = true;
+            
+            // Masukkan ikon Pause menggunakan SVG
+            document.getElementById('mini-play-btn').innerHTML = iconPause;
+            document.getElementById('full-play-btn').innerHTML = iconPause;
 
             updateDashboardData();
 
@@ -1475,12 +1447,14 @@
             if (event) event.stopPropagation();
             if (isPlaying) {
                 dashMusic.pause();
-                miniPlayBtn.innerHTML = "&#x25B6;&#xFE0E;";
-                fullPlayBtn.innerHTML = "&#x25B6;&#xFE0E;";
+                // Ubah menjadi ikon SVG Play
+                miniPlayBtn.innerHTML = iconPlay;
+                fullPlayBtn.innerHTML = iconPlay;
             } else {
                 dashMusic.play().catch(e => console.log(e));
-                miniPlayBtn.innerHTML = "&#x23F8;&#xFE0E;";
-                fullPlayBtn.innerHTML = "&#x23F8;&#xFE0E;";
+                // Ubah menjadi ikon SVG Pause
+                miniPlayBtn.innerHTML = iconPause;
+                fullPlayBtn.innerHTML = iconPause;
             }
             isPlaying = !isPlaying;
         }
